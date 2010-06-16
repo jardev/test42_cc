@@ -1,0 +1,15 @@
+{% extends "tickets/base.html" %}
+
+
+{% block content %}
+    <h1>{{ agent }}</h1>
+
+    <form method="post" action="" class="agent-form">
+        {{ form.as_p }}
+        <input type="submit" value="Save" name="submit" alt="Save changes" />
+    </form>
+{% endblock %}
+
+{% block commands %}
+    <a href="/">Home</a>
+{% endblock %}
