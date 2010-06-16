@@ -1,11 +1,51 @@
 {% extends "tickets/base.html" %}
 
+{% load adminmedia %}
+
+{% block extra_head %}
+    <link rel="stylesheet" type="text/css" href="/media/css/forms.css"/>
+    <link rel="stylesheet" type="text/css" href="/media/css/base.css"/>
+    <link rel="stylesheet" type="text/css" href="/media/css/global.css"/>
+    <link rel="stylesheet" type="text/css" href="/media/css/widgets.css"/>
+
+    <script type="text/javascript" src="/admin/jsi18n/"></script>
+    <script type="text/javascript" src="/media/js/core.js"></script>
+    <script type="text/javascript" src="/media/js/admin/RelatedObjectLookups.js"></script>
+
+    {{ form.media }}
+{% endblock %}
 
 {% block content %}
     <h1>{{ agent }}</h1>
 
     <form method="post" action="" class="agent-form">
         {{ form.as_p }}
+        <p>
+            <label for="id_agent_contacts">Contacts:</label>
+            {{ contacts.management_form }}
+            <table id="id_agent_contacts">
+                <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Contact</th>
+                    <th>Default</th>
+                    <th>Active</th>
+                    <th>Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for contact_form in contacts.forms %}
+                <tr>
+                    <td>{{ contact_form.id }} {{ contact_form.contact_type }}</td>
+                    <td>{{ contact_form.contact }}</td>
+                    <td>{{ contact_form.is_default }}</td>
+                    <td>{{ contact_form.is_active }}</td>
+                    <td>{{ contact_form.DELETE }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </p>
         <input type="submit" value="Save" name="submit" alt="Save changes" />
     </form>
 {% endblock %}

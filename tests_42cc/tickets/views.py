@@ -1,7 +1,9 @@
+from django.core import urlresolvers
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
+from django.http import HttpResponseRedirect
 from tests_42cc.tickets.models import Agent, ContactInfo
-from tests_42cc.tickets.forms import AgentForm
+from tests_42cc.tickets.forms import AgentForm, ContactFormSet
 
 def index(request, template_name='tickets/index.html'):
     page_title = 'About My Self'
@@ -14,7 +16,19 @@ def edit(request, template_name='tickets/edit.html'):
     page_title = 'About My Self - Edit'    
     agent = Agent.objects.get()
     
-    form = AgentForm(instance=agent, label_suffix=':')
+    if request.method == 'POST':
+        form = AgentForm(request.POST, instance=agent)
+        contacts = ContactFormSet(request.POST, instance=agent)
+        if form.is_valid():
+            form.save()
+            if contacts.is_valid():
+                contacts.save()
+                return HttpResponseRedirect(urlresolvers.reverse('tickets_home'))
+    else:
+        form = AgentForm(instance=agent, label_suffix=':')
+        contacts = ContactFormSet(instance=agent)
     
     return render_to_response(template_name, locals(),
         context_instance=RequestContext(request))
+        
+        
