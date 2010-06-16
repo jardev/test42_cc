@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.contenttypes import generic
 
 class Agent(models.Model):
     first_name = models.CharField(max_length=50)
@@ -41,6 +42,24 @@ class HttpRequestLogEntry(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, blank=True, null=True)
     
+class ModelActionLogEntry(models.Model):
+    ACTION_INSERT = 0
+    ACTION_EDIT = 1
+    ACTION_DELETE = 2
+    ACTION_TYPES = ((ACTION_INSERT, 'Insert'),
+                    (ACTION_EDIT, 'Edit'),
+                    (ACTION_DELETE, 'Delete'))
+    
+    action = models.SmallIntegerField(choices=ACTION_TYPES)
+    when = models.DateTimeField(auto_now_add=True)
+    model_class = models.CharField(max_length=255)
+    model_module = models.CharField(max_length=255)
+    model_id = models.PositiveIntegerField()
+    model_object = generic.GenericForeignKey('model_class', 'model_id')
+    user = models.ForeignKey(User, blank=True, null=True)
+
+    
+from tests_42cc.tickets import listeners
+listeners.start_default_listening()    
         
-        
-        
+      

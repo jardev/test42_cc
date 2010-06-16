@@ -1,5 +1,5 @@
 from django.contrib import admin
-from tests_42cc.tickets.models import Agent, ContactInfo
+from tests_42cc.tickets.models import Agent, ContactInfo, ModelActionLogEntry
 
 class AgentAdmin(admin.ModelAdmin):
     list_display = ('last_name', 'first_name', 'birthday')
@@ -17,5 +17,13 @@ class ContactInfoAdmin(admin.ModelAdmin):
     ordering = ['contact_type', 'contact']
     search_fields = ['contact']
     
+class ModelActionLogEntryAdmin(admin.ModelAdmin):
+    list_display = ('when', 'action', 'model_module', 'model_class', 'model_id',)
+    list_display_links = ('model_id',)
+    list_per_page = 100
+    ordering = ['-when']
+    search_fields = ['model_module', 'model_class']
+    
 admin.site.register(ContactInfo, ContactInfoAdmin)
+admin.site.register(ModelActionLogEntry, ModelActionLogEntryAdmin)
     
