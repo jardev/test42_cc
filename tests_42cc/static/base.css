@@ -1,0 +1,24 @@
+body {
+    background: white;
+    font-family: "bitstream vera sans", "dejavu sans", verdana, sans-serif;
+    font-size: 12px;
+    line-height: 14px;
+    margin: 0 auto;
+}
+
+h1 {
+    color:navy;
+}
+
+#main {
+    width: 695px;
+    margin: 0 auto;
+    margin-top: 83px;
+    border: 1px solid lightgrey;
+    padding:10px;
+    
+}
+
+ul li {
+    padding:2px;
+}

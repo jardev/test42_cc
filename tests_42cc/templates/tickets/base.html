@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block site_wrapper %}
+<div id="main">
+    {% block content %}{% endblock %}
+    <p> {% block commands %}{% endblock %} </p>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "tickets/base.html" %}
+
+{% block content %}
+    <h1>{{ agent }}</h1>
+    <p> {{ agent.biography }} </p>
+    <h3>Contacts:</h3>    
+    <ul>
+    {% for ci in agent.contactinfo_set.all %}
+    <li>
+        {% if ci.is_active %} 
+            {% if ci.is_default %} <b> {% endif %}
+        {% else %}
+            <s>
+        {% endif %}
+
+        {{ ci.get_contact_type_display }}: <a href=""> {{ ci.contact }} </a>
+
+        {% if ci.is_active %} 
+            {% if ci.is_default %} </b> {% endif %}
+        {% else %}
+            </s>
+        {% endif %}
+    </li>
+    {% endfor %}
+    </ul>
+{% endblock %}
