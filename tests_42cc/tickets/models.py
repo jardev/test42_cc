@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Agent(models.Model):
     first_name = models.CharField(max_length=50)
@@ -32,6 +33,14 @@ class ContactInfo(models.Model):
     def __unicode__(self):
         # TODO: Rewrite using custom tags
         return self.get_contact_type_display() + ': ' + self.contact
+        
+class HttpRequestLogEntry(models.Model):
+    host = models.CharField(max_length=255)
+    method = models.CharField(max_length=10)
+    url = models.CharField(max_length=255)
+    date = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, blank=True, null=True)
+    
         
         
         
