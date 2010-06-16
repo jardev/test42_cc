@@ -18,7 +18,7 @@
 {% block content %}
     <h1>{{ agent }}</h1>
 
-    <form method="post" action="" class="agent-form">
+    <form method="post" action="" class="agent-form">{% csrf_token %}
         {{ form.as_p }}
         <p>
             <label for="id_agent_contacts">Contacts:</label>
