@@ -7,6 +7,7 @@ from django.contrib.auth import logout
 from django.utils import simplejson
 from tests_42cc.tickets.models import Agent, ContactInfo
 from tests_42cc.tickets.forms import AgentForm, ContactFormSet
+from tests_42cc.tickets.forms import HttpRequestLogEntry
 
 def index(request, template_name='tickets/index.html'):
     page_title = 'About My Self'
@@ -54,4 +55,8 @@ def edit(request, template_name='tickets/edit.html'):
 def do_logout(request):
     logout(request)        
     return HttpResponseRedirect(urlresolvers.reverse('tickets_home'))
+  
+@login_required          
+def view_http_log(request):
+    
 
