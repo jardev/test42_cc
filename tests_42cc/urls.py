@@ -10,5 +10,5 @@ urlpatterns = patterns('',
     (r'^', include('tickets.urls')),
     
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',
-        { 'document_root' : os.path.join(CURRENT_PATH, 'static') }),
+        { 'document_root' : os.path.join(settings.CURRENT_PATH, 'static') }),
 )

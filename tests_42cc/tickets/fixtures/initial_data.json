@@ -1,0 +1,60 @@
+[
+    {
+        "pk": 1, 
+        "model": "tickets.agent", 
+        "fields": {
+            "birthday": "1984-12-26 21:20:53", 
+            "first_name": "Jarik", 
+            "last_name": "Luzin", 
+            "biography": "Born in 1984 in Ukraine, Kyiv. Graduated from National Technical University of Ukraine with specialist's degree in \"Automation and Computer Integrated Technologies\"."
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "tickets.contactinfo", 
+        "fields": {
+            "contact_type": "email", 
+            "is_active": true, 
+            "agent": 1, 
+            "is_default": true, 
+            "contact": "jardev@gmail.com", 
+            "additional_info": ""
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "tickets.contactinfo", 
+        "fields": {
+            "contact_type": "icq", 
+            "is_active": true, 
+            "agent": 1, 
+            "is_default": false, 
+            "contact": "269872671", 
+            "additional_info": ""
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "tickets.contactinfo", 
+        "fields": {
+            "contact_type": "phone", 
+            "is_active": false, 
+            "agent": 1, 
+            "is_default": false, 
+            "contact": "+38 044 111 22 33", 
+            "additional_info": "Not using anymore"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "tickets.contactinfo", 
+        "fields": {
+            "contact_type": "phone", 
+            "is_active": true, 
+            "agent": 1, 
+            "is_default": true, 
+            "contact": "+38 097 915 20 18", 
+            "additional_info": ""
+        }
+    }
+]
