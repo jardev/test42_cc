@@ -1,6 +1,7 @@
 {% extends "tickets/base.html" %}
 
 {% load adminmedia %}
+{% load tickets_tags %}
 
 {% block extra_head %}
     <link rel="stylesheet" type="text/css" href="/media/css/forms.css"/>
@@ -53,5 +54,6 @@
 
 {% block commands %}
     <a href="/">Home</a> |
+    {% edit_object agent %} | 
     <a href="/accounts/logout/">Log out</a>
 {% endblock %}
