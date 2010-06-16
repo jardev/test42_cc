@@ -80,6 +80,14 @@ MIDDLEWARE_CLASSES = (
     'tests_42cc.tickets.middleware.HttpRequestLoggerMiddleware',
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'tests_42cc.tickets.context_processors.project_settings',
+)
+
 ROOT_URLCONF = 'tests_42cc.urls'
 
 TEMPLATE_DIRS = (
