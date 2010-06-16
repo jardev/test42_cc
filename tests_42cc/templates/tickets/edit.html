@@ -5,12 +5,13 @@
 {% block extra_head %}
     <link rel="stylesheet" type="text/css" href="/media/css/forms.css"/>
     <link rel="stylesheet" type="text/css" href="/media/css/base.css"/>
-    <link rel="stylesheet" type="text/css" href="/media/css/global.css"/>
     <link rel="stylesheet" type="text/css" href="/media/css/widgets.css"/>
 
     <script type="text/javascript" src="/admin/jsi18n/"></script>
     <script type="text/javascript" src="/media/js/core.js"></script>
     <script type="text/javascript" src="/media/js/admin/RelatedObjectLookups.js"></script>
+
+    <script type="text/javascript">window.__admin_media_prefix__ = "/media/";</script>
 
     {{ form.media }}
 {% endblock %}
