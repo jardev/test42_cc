@@ -1,7 +1,7 @@
 from django.db import models
 from tests_42cc.tickets.models import ModelActionLogEntry
 
-MODEL_TRACKER_IGNORE_LIST = ['ModelActionLogEntry']
+MODEL_TRACKER_IGNORE_LIST = ['ModelActionLogEntry', 'HttpRequestLogEntry']
 
 def check_instance(instance):
     return not (instance.__class__.__name__ in MODEL_TRACKER_IGNORE_LIST)
