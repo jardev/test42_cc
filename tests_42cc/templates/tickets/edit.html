@@ -9,18 +9,79 @@
     <link rel="stylesheet" type="text/css" href="/media/css/widgets.css"/>
 
     <script type="text/javascript" src="/admin/jsi18n/"></script>
+    <script type="text/javascript" src="/media/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.forms.js"></script>
     <script type="text/javascript" src="/media/js/core.js"></script>
     <script type="text/javascript" src="/media/js/admin/RelatedObjectLookups.js"></script>
 
     <script type="text/javascript">window.__admin_media_prefix__ = "/media/";</script>
 
     {{ form.media }}
+    
+    <script>
+        function prepareDocument(){
+            statusBox();
+        }
+        jQuery(document).ready(prepareDocument);
+
+        $(function() {
+            var options = {
+                target: '#form-results',
+                dataType: 'json',
+                beforeSubmit: preSubmit,
+                success: postSubmit
+            };
+        
+            $("#agentForm").ajaxForm(options);
+        });
+
+        function preSubmit(formData, jqForm, options) {
+            $(options.target).text('');
+            for (i in jqForm[0].elements) {
+                if ('INPUT' != jqForm[0].elements[i].nodeName &&
+                    'TEXTAREA' != jqForm[0].elements[i].nodeName)
+                    continue;
+                $(jqForm[0].elements[i]).attr('disabled', true);
+            }
+            return true;
+        }
+
+        function postSubmit(responseText, statusText, xhr, $form)  {
+            for (i in $form[0].elements) {
+                if ('INPUT' != $form[0].elements[i].nodeName &&
+                    'TEXTAREA' != $form[0].elements[i].nodeName)
+                    continue;
+                $($form[0].elements[i]).attr('disabled', false);
+            }
+            if (responseText.success) {
+                $('#form-results').html('<div class="ok">Saved.</div>');
+            } else {
+                var text = '<b>Fix errors and submit again:</b><br />';
+                text += '<div class="errors">';
+                for (i in responseText.errors) {
+                    error = responseText.errors[i];
+                    text += '"' + error[0] + '": ' + error[1] + '<br />';
+                }
+                text += '</div>';
+                $('#form-results').html(text);
+            }
+        }
+        
+        
+        function statusBox() {
+            jQuery('<div id="loading">Processing...</div>')
+            .prependTo("#main")
+            .ajaxStart(function(){jQuery(this).show();})
+            .ajaxStop(function(){jQuery(this).hide();})
+        }
+    </script>
+
 {% endblock %}
 
 {% block content %}
     <h1>{{ agent }}</h1>
 
-    <form method="post" action="" class="agent-form">{% csrf_token %}
+    <form id="agentForm" method="post" action="">{% csrf_token %}      
         {{ form.as_p }}
         <p>
             <label for="id_agent_contacts">Contacts:</label>
@@ -48,6 +109,7 @@
                 </tbody>
             </table>
         </p>
+        <div id="form-results"></div>            
         <input type="submit" value="Save" name="submit" alt="Save changes" />
     </form>
 {% endblock %}

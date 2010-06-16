@@ -13,7 +13,7 @@ h1 {
 #main {
     width: 695px;
     margin: 0 auto;
-    margin-top: 83px;
+    margin-top: 65px;
     border: 1px solid lightgrey;
     padding:10px;
     
@@ -22,3 +22,40 @@ h1 {
 ul li {
     padding:2px;
 }
+
+#agentForm {
+    padding: 5px;
+}
+
+#form-results {
+    padding-top:15px;
+    padding-bottom:10px;
+}
+
+#form-results .ok {
+    color:green;
+}
+
+#form-results .errors {
+    border:1px solid red;
+    color:red; 
+//    background-color:yellow;
+    padding:7px;
+}
+
+#loading{
+    display:none;
+    position:fixed;
+    top:0;
+    left:45%;
+    background-color:Pink;
+    width: 200px;
+    font-size:medium;
+    color:Black;
+    font-weight:bold;
+    padding:2px;
+    border:solid 1px Red;
+    text-align: center;
+    z-index:100;
+}
+
