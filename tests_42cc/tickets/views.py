@@ -5,9 +5,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.utils import simplejson
-from tests_42cc.tickets.models import Agent, ContactInfo
-from tests_42cc.tickets.forms import AgentForm, ContactFormSet
-from tests_42cc.tickets.forms import HttpRequestLogEntry
+from tests_42cc.tickets.models import Agent, ContactInfo, HttpRequestLogEntry
+from tests_42cc.tickets.forms import AgentForm, ContactFormSet, HttpRequestLogForm
 
 def index(request, template_name='tickets/index.html'):
     page_title = 'About My Self'
@@ -57,6 +56,15 @@ def do_logout(request):
     return HttpResponseRedirect(urlresolvers.reverse('tickets_home'))
   
 @login_required          
-def view_http_log(request):
+def view_http_log(request, template_name='tickets/view_log.html'):
+    log = HttpRequestLogEntry.objects.all()[:10]
+    form = HttpRequestLogForm()
+    form.fields['entry'].initial = [i for i in log]
+    
+    return render_to_response(template_name,
+        context_instance=RequestContext(request, 
+            { 'form' : form,
+              'page_title' : "Http Request Log" }))
+        
     
 
