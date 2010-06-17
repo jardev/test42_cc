@@ -54,7 +54,7 @@ class ModelActionLogEntry(models.Model):
     when = models.DateTimeField(auto_now_add=True)
     model_class = models.CharField(max_length=255)
     model_module = models.CharField(max_length=255)
-    model_id = models.PositiveIntegerField()
+    model_id = models.CharField(max_length=255, blank=True, null=True)
     model_object = generic.GenericForeignKey('model_class', 'model_id')
     user = models.ForeignKey(User, blank=True, null=True)
 
