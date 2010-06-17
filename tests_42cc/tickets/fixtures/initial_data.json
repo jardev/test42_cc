@@ -56,7 +56,7 @@
             "contact": "+38 097 915 20 18", 
             "additional_info": ""
         }
-    }
+    },
     {
         "pk": 1, 
         "model": "auth.user", 
