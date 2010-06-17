@@ -56,8 +56,8 @@ def do_logout(request):
     return HttpResponseRedirect(urlresolvers.reverse('tickets_home'))
   
 @login_required          
-def view_http_log(request, template_name='tickets/view_log.html'):
-    log = HttpRequestLogEntry.objects.all()[:10]
+def view_http_log(request, template_name='tickets/view_log.html', priority=1):
+    log = HttpRequestLogEntry.objects.filter(priority=priority)[:10]
     page_title = "Http Request Log"    
     return render_to_response(template_name, locals(),
         context_instance=RequestContext(request))
