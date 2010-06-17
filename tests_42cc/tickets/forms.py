@@ -10,9 +10,6 @@ class AgentForm(forms.ModelForm):
         widgets = {
             'birthday' : widgets.AdminDateWidget()
         }
-        
-class HttpRequestLogForm(forms.Form):
-    entry = forms.CharField()
-        
+               
 ContactFormSet = inlineformset_factory(Agent, ContactInfo, can_delete=True)        
 
