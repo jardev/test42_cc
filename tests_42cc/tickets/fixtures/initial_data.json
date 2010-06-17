@@ -56,5 +56,23 @@
             "contact": "+38 097 915 20 18", 
             "additional_info": ""
         }
+    },
+    {
+        "pk": 1, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "admin", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": true, 
+            "is_staff": true, 
+            "last_login": "2010-06-17 10:15:15", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$a6fa0$5be5c9df2c894a1109a2577e13199201609e0429", 
+            "email": "jardev@gmail.com", 
+            "date_joined": "2010-06-17 10:15:15"
+        }
     }
 ]
