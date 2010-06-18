@@ -1,5 +1,6 @@
 from django.test.client import Client
 from django.test import TestCase
+from django.http import HttpRequest, HttpResponse
 from tests_42cc.tickets import models
 
 class AgentModelTest(TestCase):
@@ -65,6 +66,17 @@ def IndexViewTest(TestCase):
         client = Client()
         response = client.get('/')
         self.failUnlessEqual(response.status_code, 200)
+        
+def MiddlewareTest(TestCase):
+    def test_http_request_logger():
+        client = Client()        
+        request, response = client.pre_view_get('/middleware-test-url/')
+        middleware = HttpRequestLoggerMiddleware()
+        middleware.process_response(request, response)
+        result = HttpRequestLogEntry.objects.get(url='/middleware-test-url/')
+        self.assertNotEquals(result, None)
+        self.assertEquals(result.method, 'GET') 
+
         
             
             
