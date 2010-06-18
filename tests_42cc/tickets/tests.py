@@ -2,6 +2,7 @@ from django.test.client import Client
 from django.test import TestCase
 from django.http import HttpRequest, HttpResponse
 from tests_42cc.tickets import models
+from tests_42cc import settings
 
 class AgentModelTest(TestCase):
     def setUp(self):
@@ -79,7 +80,9 @@ def MiddlewareTest(TestCase):
         
 def ContextProcessorTest(TestCase):
     def test_response(self):
-        pass
+        client = Client()
+        response = client.get('/')
+        self.assertEquals(response.context['settings'], settings)
 
         
             
