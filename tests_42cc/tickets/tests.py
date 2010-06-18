@@ -76,7 +76,7 @@ class MiddlewareTest(TestCase):
         self.assertNotEquals(result, None)
         self.assertEquals(result.method, 'GET') 
         
-def ContextProcessorTest(TestCase):
+class ContextProcessorTest(TestCase):
     def test_response(self):
         client = Client()
         response = client.get('/')
