@@ -6,7 +6,7 @@ from tests_42cc.tickets.models import Agent, ContactInfo, HttpRequestLogEntry
 class AgentForm(forms.ModelForm):
     class Meta:
         model = Agent        
-        fields = ['birthday', 'biography', 'last_name', 'first_name']
+        fields = ['first_name', 'last_name', 'biography', 'birthday']
         widgets = {
             'birthday' : widgets.AdminDateWidget()
         }
