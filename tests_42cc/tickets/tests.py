@@ -93,6 +93,18 @@ class EditFormTest(TestCase):
         self.failIfEqual(response.context['form'], None)
         self.failIfEqual(response.context['contacts'], None)
 
+class AuthTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        
+    def test_unauthorized(self):
+        response = self.client.get('/edit/')
+        self.assertEqual(response.status_code, 302)
+        
+    def test_authorized(self):
+        self.client.login(username='admin', password='admin')
+        response = self.client.get('/edit/')
+        self.assertEqual(response.status_code, 200)
 
         
             
