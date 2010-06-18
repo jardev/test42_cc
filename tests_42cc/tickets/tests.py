@@ -76,6 +76,10 @@ def MiddlewareTest(TestCase):
         result = HttpRequestLogEntry.objects.get(url='/middleware-test-url/')
         self.assertNotEquals(result, None)
         self.assertEquals(result.method, 'GET') 
+        
+def ContextProcessorTest(TestCase):
+    def test_response(self):
+        pass
 
         
             
