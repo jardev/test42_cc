@@ -123,8 +123,56 @@ class EditObjectTagTest(TestCase):
         result = self.template.render(Context({ 'test_object' : self.test_object }))
         self.assertEqual(result, self.correct_url)
 
+class ModelActionLogTest(TestCase):
+    def test_create_object(self):
+        count = models.ModelActionLogEntry.objects.count()        
+        a = models.Agent()
+        a.first_name = 'FirstName'
+        a.last_name = 'LastName'
+        a.biography = 'Biography'
+        a.birthday = '1980-01-01'
+        a.save()
+        new_count = models.ModelActionLogEntry.objects.count()
+        self.assertEqual(count + 1, new_count)
+        
+        last_log_entry = models.ModelActionLogEntry.objects.latest('when')
+        self.assertNotEquals(last_log_entry, None)
+        self.assertEquals(last_log_entry.model_id, unicode(a.pk))
+        self.assertEquals(last_log_entry.model_class, a.__class__.__name__)
+        self.assertEquals(last_log_entry.model_module, a.__class__.__module__)
+        self.assertEquals(last_log_entry.action, 0)
+        
+    def test_edit_object(self):
+        count = models.ModelActionLogEntry.objects.count()        
+        a = models.Agent.objects.get()
+        a.biography = ''
+        a.save()
+        new_count = models.ModelActionLogEntry.objects.count()
+        self.assertEqual(count + 1, new_count)
+        
+        last_log_entry = models.ModelActionLogEntry.objects.latest('when')
+        self.assertNotEquals(last_log_entry, None)
+        self.assertEquals(last_log_entry.model_id, unicode(a.pk))
+        self.assertEquals(last_log_entry.model_class, a.__class__.__name__)
+        self.assertEquals(last_log_entry.model_module, a.__class__.__module__)
+        self.assertEquals(last_log_entry.action, 1)
+        
+    def test_delete_object(self):
+        a = models.Agent.objects.get()
+        pk = a.pk
+        a.delete()
+        
+        last_log_entry = models.ModelActionLogEntry.objects.latest('when')
+        self.assertNotEquals(last_log_entry, None)
+        self.assertEquals(last_log_entry.model_id, unicode(pk))
+        self.assertEquals(last_log_entry.model_class, a.__class__.__name__)
+        self.assertEquals(last_log_entry.model_module, a.__class__.__module__)
+        self.assertEquals(last_log_entry.action, 2)
+        
+    
         
         
         
-            
-            
+        
+        
+                      
