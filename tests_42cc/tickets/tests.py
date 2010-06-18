@@ -61,7 +61,7 @@ class AgentModelTest(TestCase):
         self.assertEquals(self.contact3.additional_info, '')
         self.assertEquals(self.contact3.is_default, False)
         self.assertEquals(self.contact3.is_active, False)
-                        
+
 class IndexViewTest(TestCase):
     def test_index(self):
         client = Client()
@@ -71,10 +71,8 @@ class IndexViewTest(TestCase):
 class MiddlewareTest(TestCase):
     def test_http_request_logger(self):
         client = Client()        
-        request, response = client.pre_view_get('/middleware-test-url/')
-        middleware = HttpRequestLoggerMiddleware()
-        middleware.process_response(request, response)
-        result = HttpRequestLogEntry.objects.get(url='/middleware-test-url/')
+        response = client.get('/admin/')
+        result = models.HttpRequestLogEntry.objects.get(url='/admin/')
         self.assertNotEquals(result, None)
         self.assertEquals(result.method, 'GET') 
         
@@ -91,7 +89,7 @@ class EditFormTest(TestCase):
         
     def test_edit_view(self):        
         response = self.client.get('/edit/')
-        self.assertEqual(response.status_code, 300)
+        self.assertEqual(response.status_code, 200)
         self.failIfEqual(response.context['form'], None)
         self.failIfEqual(response.context['contacts'], None)
 
