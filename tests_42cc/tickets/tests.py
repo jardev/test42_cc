@@ -1,11 +1,11 @@
-from django.test.client import Client
 from django.test import TestCase
+from django.test.client import Client
 from django.http import HttpRequest, HttpResponse
 from tests_42cc.tickets import models
 from tests_42cc import settings
 
 class AgentModelTest(TestCase):
-    def setUp(self):
+    def setUp(self):        
         self.agent = models.Agent.objects.create(
             first_name='Jarik',
             last_name='Luzin',
@@ -61,28 +61,38 @@ class AgentModelTest(TestCase):
         self.assertEquals(self.contact3.additional_info, '')
         self.assertEquals(self.contact3.is_default, False)
         self.assertEquals(self.contact3.is_active, False)
-        
-def IndexViewTest(TestCase):
+
+class IndexViewTest(TestCase):
     def test_index(self):
         client = Client()
         response = client.get('/')
         self.failUnlessEqual(response.status_code, 200)
         
-def MiddlewareTest(TestCase):
+class MiddlewareTest(TestCase):
     def test_http_request_logger(self):
         client = Client()        
-        request, response = client.pre_view_get('/middleware-test-url/')
-        middleware = HttpRequestLoggerMiddleware()
-        middleware.process_response(request, response)
-        result = HttpRequestLogEntry.objects.get(url='/middleware-test-url/')
+        response = client.get('/admin/')
+        result = models.HttpRequestLogEntry.objects.get(url='/admin/')
         self.assertNotEquals(result, None)
         self.assertEquals(result.method, 'GET') 
         
-def ContextProcessorTest(TestCase):
+class ContextProcessorTest(TestCase):
     def test_response(self):
         client = Client()
         response = client.get('/')
         self.assertEquals(response.context['settings'], settings)
+        
+class EditFormTest(TestCase):
+    def setUp(self):        
+        self.client = Client()
+        self.client.login(username='admin', password='admin')
+        
+    def test_edit_view(self):        
+        response = self.client.get('/edit/')
+        self.assertEqual(response.status_code, 200)
+        self.failIfEqual(response.context['form'], None)
+        self.failIfEqual(response.context['contacts'], None)
+
 
         
             
