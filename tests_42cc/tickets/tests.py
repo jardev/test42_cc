@@ -68,7 +68,7 @@ def IndexViewTest(TestCase):
         self.failUnlessEqual(response.status_code, 200)
         
 def MiddlewareTest(TestCase):
-    def test_http_request_logger():
+    def test_http_request_logger(self):
         client = Client()        
         request, response = client.pre_view_get('/middleware-test-url/')
         middleware = HttpRequestLoggerMiddleware()
