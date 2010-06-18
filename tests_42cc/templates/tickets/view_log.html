@@ -1,0 +1,15 @@
+{% extends "tickets/base.html" %}
+
+{% block content %}
+    <h1>Http Request Log</h1>
+    <ul>
+        {% for l in log %}
+            <li>{{ l }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block commands %}
+    <a href="/">Home</a> |
+    <a href="/accounts/logout/">Log out</a>
+{% endblock %}    

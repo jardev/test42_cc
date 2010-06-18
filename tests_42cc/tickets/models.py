@@ -41,6 +41,10 @@ class HttpRequestLogEntry(models.Model):
     url = models.CharField(max_length=255)
     date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, blank=True, null=True)
+    priority = models.IntegerField(default=1)
+    
+    def __unicode__(self):
+        return "[%s] From %s %s %s" % (self.date, self.host, self.method, self.url)
     
 class ModelActionLogEntry(models.Model):
     ACTION_INSERT = 0
@@ -58,6 +62,8 @@ class ModelActionLogEntry(models.Model):
     model_object = generic.GenericForeignKey('model_class', 'model_id')
     user = models.ForeignKey(User, blank=True, null=True)
 
+    def __unicode__(self):
+        return "(%s) [%s]:%s %s" % (self.when, self.action, self.model_class, self.model_id)
     
 from tests_42cc.tickets import listeners
 listeners.start_default_listening()    
