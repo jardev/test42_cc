@@ -41,6 +41,7 @@ class HttpRequestLogEntry(models.Model):
     url = models.CharField(max_length=255)
     date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, blank=True, null=True)
+    priority = models.IntegerField(default=1)
     
     def __unicode__(self):
         return "[%s] From %s %s %s" % (self.date, self.host, self.method, self.url)
