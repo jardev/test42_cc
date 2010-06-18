@@ -1,5 +1,5 @@
 from django.contrib import admin
-from tests_42cc.tickets.models import Agent, ContactInfo
+from tests_42cc.tickets.models import Agent, ContactInfo, HttpRequestLogEntry
 
 class AgentAdmin(admin.ModelAdmin):
     list_display = ('last_name', 'first_name', 'birthday')
@@ -18,4 +18,13 @@ class ContactInfoAdmin(admin.ModelAdmin):
     search_fields = ['contact']
     
 admin.site.register(ContactInfo, ContactInfoAdmin)
+
+class HttpRequestLogEntryAdmin(admin.ModelAdmin):
+    list_display = ('date', 'host', 'method', 'url', 'user')
+    list_display_links = ('url',)
+    list_per_page = 50
+    ordering = ['-date']
+    search_fields = ['host', 'url']
+    
+admin.site.register(HttpRequestLogEntry, HttpRequestLogEntryAdmin)
     
