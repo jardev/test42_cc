@@ -61,7 +61,7 @@ class AgentModelTest(TestCase):
         self.assertEquals(self.contact3.is_default, False)
         self.assertEquals(self.contact3.is_active, False)
         
-def IndexViewTest(TestCase):
+class IndexViewTest(TestCase):
     def test_index(self):
         client = Client()
         response = client.get('/')
