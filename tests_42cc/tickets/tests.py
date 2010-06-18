@@ -1,8 +1,10 @@
 from django.test import TestCase
 from django.test.client import Client
 from django.http import HttpRequest, HttpResponse
+from django.template import Template, Context
 from tests_42cc.tickets import models
 from tests_42cc import settings
+from tests_42cc.tickets.templatetags.tickets_tags import build_object_link
 
 class AgentModelTest(TestCase):
     def setUp(self):        
@@ -106,6 +108,23 @@ class AuthTest(TestCase):
         response = self.client.get('/edit/')
         self.assertEqual(response.status_code, 200)
 
+class EditObjectTagTest(TestCase):
+    template_text = '{% load tickets_tags %}{% edit_object test_object %}'
+
+    def setUp(self):
+        self.client = Client()
+        self.client.login(username='admin', password='admin')
+        
+        self.test_object = models.Agent.objects.get()
+        self.correct_url = build_object_link(self.test_object)
+        self.template = Template(EditObjectTagTest.template_text)
+                
+    def test_generate_link(self):
+        result = self.template.render(Context({ 'test_object' : self.test_object }))
+        self.assertEqual(result, self.correct_url)
+
+        
+        
         
             
             
