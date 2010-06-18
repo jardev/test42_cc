@@ -29,6 +29,7 @@ def edit(request, template_name='tickets/edit.html'):
                 return HttpResponseRedirect(urlresolvers.reverse('tickets_home'))
     else:
         form = AgentForm(instance=agent, label_suffix=':')
+        form.fields.keyOrder.reverse()
         contacts = ContactFormSet(instance=agent)
     
     return render_to_response(template_name, locals(),
