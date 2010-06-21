@@ -3,6 +3,7 @@ from django.test.client import Client
 from django.http import HttpRequest, HttpResponse
 from tests_42cc.tickets import models
 from tests_42cc import settings
+import datetime
 
 class AgentModelTest(TestCase):
     def setUp(self):        
@@ -86,12 +87,99 @@ class EditFormTest(TestCase):
     def setUp(self):        
         self.client = Client()
         self.client.login(username='admin', password='admin')
+        self.agent = models.Agent.objects.get(last_name='Luzin')
+        self.assertNotEquals(self.agent, None)
         
     def test_edit_view(self):        
         response = self.client.get('/edit/')
         self.assertEqual(response.status_code, 200)
         self.failIfEqual(response.context['form'], None)
         self.failIfEqual(response.context['contacts'], None)
+        self.assertContains(response, self.agent.pk)
+        
+    def test_edit_save(self):
+        post_data = { # change first, last name, biography and birthday
+                      u'first_name': [u'New First Name'], 
+                      u'last_name': [u'New Last Name'], 
+                      u'biography': [u'New Biography'], 
+                      u'birthday': [u'1980-01-01'], 
+                        
+                      # add three forms for update, delete and insert actions
+                      u'contactinfo_set-INITIAL_FORMS': [u'4'], 
+                      u'contactinfo_set-TOTAL_FORMS': [u'7'], 
+                      u'contactinfo_set-MAX_NUM_FORMS': [u''], 
+                      u'submit': [u'Save'], 
+                      
+                      # change contact to 'changed@testserver.com'  
+                      u'contactinfo_set-0-id': [u'1'], 
+                      u'contactinfo_set-0-contact_type': [u'email'], 
+                      u'contactinfo_set-0-contact': [u'changed@testserver.com'],                         
+                      u'contactinfo_set-0-is_active': [u'on'], 
+                      u'contactinfo_set-0-is_default': [u'on'], 
+                        
+                      # nothing to do
+                      u'contactinfo_set-1-id': [u'3'], 
+                      u'contactinfo_set-1-contact_type': [u'icq'], 
+                      u'contactinfo_set-1-contact': [u'269872671'], 
+                      u'contactinfo_set-1-is_active': [u'on'], 
+                        
+                      # delete the phone number
+                      u'contactinfo_set-2-id': [u'4'], 
+                      #u'contactinfo_set-2-contact_type': [u'phone'], 
+                      #u'contactinfo_set-2-contact': [u'+38 044 111 22 33'],     
+                      u'contactinfo_set-2-DELETE': [u'on'], 
+                      
+                      # nothing to do  
+                      u'contactinfo_set-3-id': [u'2'], 
+                      u'contactinfo_set-3-contact_type': [u'phone'], 
+                      u'contactinfo_set-3-contact': [u'097 915 20 18'], 
+                      u'contactinfo_set-3-is_active': [u'on'], 
+                      u'contactinfo_set-3-is_default': [u'on'], 
+                        
+                      # create new ContactInfo entry
+                      u'contactinfo_set-4-id': [u''], 
+                      u'contactinfo_set-4-contact_type': [u'email'], 
+                      u'contactinfo_set-4-contact': [u'mail@test.com'],                         
+                        
+                      # empty form row
+                      u'contactinfo_set-5-id': [u''], 
+                      u'contactinfo_set-5-contact_type': [u'email'], 
+                      u'contactinfo_set-5-contact': [u''], 
+                      u'contactinfo_set-5-is_active': [u'on'], 
+                        
+                      # empty form row
+                      u'contactinfo_set-6-id': [u''], 
+                      u'contactinfo_set-6-contact_type': [u'email'], 
+                      u'contactinfo_set-6-contact': [u''],
+                      u'contactinfo_set-6-is_active': [u'on'] }
+        
+        response = self.client.post('/edit/', post_data)
+        self.assertEquals(response.status_code, 302) # redirect to main page
+        modified_agent = models.Agent.objects.get(pk=self.agent.pk)
+        self.assertEquals(modified_agent.first_name, 'New First Name')
+        self.assertEquals(modified_agent.last_name, 'New Last Name')
+        self.assertEquals(modified_agent.biography, 'New Biography')
+        self.assertEquals(modified_agent.birthday, 
+            datetime.datetime(1980, 1, 1, 0, 0))
+        self.assertEquals(modified_agent.contactinfo_set.count(),
+            self.agent.contactinfo_set.count())
+        # check for changed ContactInfo
+        self.assertEquals(modified_agent.contactinfo_set.all()[0].contact, 
+            'changed@testserver.com')
+        self.assertEquals(len(models.ContactInfo.objects.filter(
+            contact='+38 044 111 22 33')), 0)
+        self.failIfEqual(models.ContactInfo.objects.get(
+            contact='mail@test.com'), None)
+            
+            
+        
+        
+
+
+        
+        
+        
+        
 
 
         
