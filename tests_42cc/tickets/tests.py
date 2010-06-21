@@ -247,7 +247,20 @@ class ModelActionLogTest(TestCase):
         self.assertEquals(last_log_entry.model_module, a.__class__.__module__)
         self.assertEquals(last_log_entry.action, 2)
         
-    
+class HttpLogViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.client.login(username='admin', password='admin')
+        # make 10 requests
+        for i in range(10):
+            self.client.get('/')
+            
+    def test_view_http_log(self):
+        response = self.client.get('/http-log/')
+        self.assertEquals(response.status_code, 200)
+        for log_entry in models.HttpRequestLogEntry.objects.all()[:10]:
+            self.assertContains(response, log_entry)
+            
         
         
         
