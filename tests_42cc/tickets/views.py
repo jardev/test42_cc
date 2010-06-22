@@ -7,6 +7,7 @@ from django.contrib.auth import logout
 from django.utils import simplejson
 from tests_42cc.tickets.models import Agent, ContactInfo, HttpRequestLogEntry
 from tests_42cc.tickets.forms import AgentForm, ContactFormSet
+import itertools
 
 def index(request, template_name='tickets/index.html'):
     page_title = 'About My Self'
@@ -58,7 +59,9 @@ def do_logout(request):
   
 @login_required          
 def view_http_log(request, template_name='tickets/view_log.html', priority=1):
-    log = HttpRequestLogEntry.objects.filter(priority=priority)[:10]
+    log_priority = HttpRequestLogEntry.objects.order_by('date').filter(priority=priority).all()
+    log_others = HttpRequestLogEntry.objects.order_by('date').exclude(priority=priority).all()
+    log = itertools.chain(log_priority, log_others)
     page_title = "Http Request Log"    
     return render_to_response(template_name, locals(),
         context_instance=RequestContext(request))
