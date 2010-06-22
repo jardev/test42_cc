@@ -260,10 +260,4 @@ class HttpLogViewTest(TestCase):
         self.assertEquals(response.status_code, 200)
         for log_entry in models.HttpRequestLogEntry.objects.all()[:10]:
             self.assertContains(response, log_entry)
-            
-        
-        
-        
-        
-        
-                      
+
