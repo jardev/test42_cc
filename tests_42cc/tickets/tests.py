@@ -6,7 +6,7 @@ from django.template import Template, Context
 from django.core.urlresolvers import reverse
 from tests_42cc.tickets import models
 from tests_42cc import settings
-from tests_42cc.tickets.forms import AgentForm 
+from tests_42cc.tickets.forms import AgentForm, DatePickerWidget
 from tests_42cc.tickets.templatetags.tickets_tags import build_object_link
 from tests_42cc.tickets import views
 
@@ -108,6 +108,11 @@ class EditFormTest(TestCase):
         original_fields = AgentForm.Meta.fields
         form_fields.reverse()
         self.assertEquals(form_fields, original_fields)
+
+    def test_date_picker_widget(self):
+        w = DatePickerWidget()
+        self.assertEquals(w.render('date', '2010-01-01'),
+            u'<input type="text" class="datepicker" value="2010-01-01" name="date" />')
                 
     def test_edit_save(self):
         post_data = { # change first, last name, biography and birthday

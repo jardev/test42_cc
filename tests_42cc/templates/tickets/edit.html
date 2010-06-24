@@ -20,6 +20,7 @@
     
     <script>
         function prepareDocument(){
+            $(".datepicker").datepicker({ dateFormat : 'yy-mm-dd'});
             statusBox();
         }
         jQuery(document).ready(prepareDocument);
@@ -83,32 +84,31 @@
 
     <form id="agentForm" method="post" action="">{% csrf_token %}      
         {{ form.as_p }}
-        <p>
-            <label for="id_agent_contacts">Contacts:</label>
-            {{ contacts.management_form }}
-            <table id="id_agent_contacts">
-                <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Contact</th>
-                    <th>Default</th>
-                    <th>Active</th>
-                    <th>Delete</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for contact_form in contacts.forms %}
-                <tr>
-                    <td>{{ contact_form.id }} {{ contact_form.contact_type }}</td>
-                    <td>{{ contact_form.contact }}</td>
-                    <td>{{ contact_form.is_default }}</td>
-                    <td>{{ contact_form.is_active }}</td>
-                    <td>{{ contact_form.DELETE }}</td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </p>
+
+        <label for="id_agent_contacts">Contacts:</label>
+        {{ contacts.management_form }}
+        <table id="id_agent_contacts">
+            <thead>
+            <tr>
+                <th>Type</th>
+                <th>Contact</th>
+                <th>Default</th>
+                <th>Active</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for contact_form in contacts.forms %}
+            <tr>
+                <td>{{ contact_form.id }} {{ contact_form.contact_type }}</td>
+                <td>{{ contact_form.contact }}</td>
+                <td>{{ contact_form.is_default }}</td>
+                <td>{{ contact_form.is_active }}</td>
+                <td>{{ contact_form.DELETE }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
         <div id="form-results"></div>            
         <input type="submit" value="Save" name="submit" alt="Save changes" />
     </form>
