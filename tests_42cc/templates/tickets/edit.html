@@ -48,12 +48,39 @@
         }
 
         function postSubmit(responseText, statusText, xhr, $form)  {
+            var rows = [];
+            var rows_count = 0;
+            var total = $('#id_contactinfo_set-TOTAL_FORMS').val();
             for (i in $form[0].elements) {
                 if ('INPUT' != $form[0].elements[i].nodeName &&
                     'TEXTAREA' != $form[0].elements[i].nodeName)
                     continue;
                 $($form[0].elements[i]).attr('disabled', false);
+                if ($($form[0].elements[i]).attr('name').match("-DELETE$") == "-DELETE" &&
+                    $($form[0].elements[i]).attr('checked') == true) {
+                    rows[rows_count] = $($form[0].elements[i]).closest("tr");
+                    rows_count++;
+                }
             }
+            if (rows_count > 0) {
+                for (row in rows) {
+                    rows[row].remove();                
+                }
+                // reindex rows
+                var row_index = -1;
+                $('#id_agent_contacts').find('tr').each(function() {
+                    $(this).find(':input').each(function() {                        
+                        var old_name = $(this).attr('name');
+                        var name_part = old_name.match('contactinfo_set-(\\d+)-');
+                        var name = old_name.replace(name_part[0], 'contactinfo_set-' + row_index + '-');
+                        var id = 'id_' + name;
+                        $(this).attr({'name': name, 'id': id});
+                    });
+                    row_index++;
+                });
+                $('#id_contactinfo_set-TOTAL_FORMS').val(total - rows_count);
+            }
+
             if (responseText.success) {
                 $('#form-results').html('<div class="ok">Saved.</div>');
             } else {
@@ -66,14 +93,30 @@
                 text += '</div>';
                 $('#form-results').html(text);
             }
-        }
-        
-        
+        }        
+
         function statusBox() {
             jQuery('<div id="loading">Processing...</div>')
             .prependTo("#main")
             .ajaxStart(function(){jQuery(this).show();})
             .ajaxStop(function(){jQuery(this).hide();})
+        }
+
+        function cloneMore(selector, type) {
+            var newElement = $(selector).clone(true);
+            var total = $('#id_' + type + '-TOTAL_FORMS').val();
+            newElement.find(':input').each(function() {
+                var name = $(this).attr('name').replace('-' + (total-1) + '-','-' + total + '-');
+                var id = 'id_' + name;
+                $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+            });
+            //newElement.find('label').each(function() {
+            //    var newFor = $(this).attr('for').replace('-' + (total-1) + '-','-' + total + '-');
+            //    $(this).attr('for', newFor);
+            //});
+            total++;
+            $('#id_' + type + '-TOTAL_FORMS').val(total);
+            $(selector).after(newElement);
         }
     </script>
 
@@ -109,6 +152,12 @@
             {% endfor %}
             </tbody>
         </table>
+        <input type="button" value="Add More" id="add_more">
+        <script>
+            $('#add_more').click(function() {
+                cloneMore('#id_agent_contacts tr:last', 'contactinfo_set');
+            });
+        </script>
         <div id="form-results"></div>            
         <input type="submit" value="Save" name="submit" alt="Save changes" />
     </form>
