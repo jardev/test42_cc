@@ -10,16 +10,16 @@ from tests_42cc.tickets.forms import AgentForm, ContactFormSet
 import itertools
 
 def index(request, template_name='tickets/index.html'):
-    page_title = 'About My Self'
-    agent = Agent.objects.get() 
+    agent = get_object_or_404(Agent)
 
-    return render_to_response(template_name, locals(), 
-        context_instance=RequestContext(request))
+    return render_to_response(template_name,
+        context_instance=RequestContext(request,
+            { 'page_title' : "About My Self",
+              'agent' : agent }))
 
 @login_required        
 def edit(request, template_name='tickets/edit.html'):
-    page_title = 'About My Self - Edit'    
-    agent = Agent.objects.get()
+    agent = get_object_or_404(Agent)
     
     if request.method == 'POST':
         form = AgentForm(request.POST, instance=agent)
@@ -42,29 +42,32 @@ def edit(request, template_name='tickets/edit.html'):
             
         json_result = simplejson.dumps(({ 'success' : success,
                                           'errors'  : errors }))
-        print json_result                                          
         return HttpResponse(json_result, mimetype='application/javascript')
     else:
         form = AgentForm(instance=agent, label_suffix=':')
-        form.fields.keyOrder.reverse()
         contacts = ContactFormSet(instance=agent)
     
-    return render_to_response(template_name, locals(),
-        context_instance=RequestContext(request))
+    return render_to_response(template_name,
+        context_instance=RequestContext(request,
+            { 'form' : form,
+              'contacts' : contacts,
+              'agent' : agent,
+              'page_title' : "About My Self - Edit" }))
 
-@login_required        
+@login_required
 def do_logout(request):
-    logout(request)        
+    logout(request)
     return HttpResponseRedirect(urlresolvers.reverse('tickets_home'))
   
-@login_required          
+@login_required
 def view_http_log(request, template_name='tickets/view_log.html', priority=1):
     log_priority = HttpRequestLogEntry.objects.order_by('date').filter(priority=priority).all()
     log_others = HttpRequestLogEntry.objects.order_by('date').exclude(priority=priority).all()
     log = itertools.chain(log_priority, log_others)
-    page_title = "Http Request Log"    
-    return render_to_response(template_name, locals(),
-        context_instance=RequestContext(request))
+    return render_to_response(template_name,
+        context_instance=RequestContext(request,
+            { 'page_title' : "Http Request Log",
+              'log' : log }))
        
     
 

@@ -115,8 +115,8 @@
 {% endblock %}
 
 {% block commands %}
-    <a href="/">Home</a> |
+    <a href="{% url tickets_home %}">Home</a> |
     {% edit_object agent %} | 
-    <a href="/http-log">Http Request Log</a> | 
-    <a href="/accounts/logout/">Log out</a>
+    <a href="{% url tickets_http_log %}">Http Request Log</a> | 
+    <a href="{% url tickets_logout %}">Log out</a>
 {% endblock %}
