@@ -129,7 +129,7 @@
 {% block content %}
     <h1>{{ agent }}</h1>
 
-    <form id="agentForm" method="post" action="">{% csrf_token %}      
+    <form id="agentForm" name="agentForm" method="post" action="">{% csrf_token %}      
         {{ form.as_p }}
 
         <label for="id_agent_contacts">Contacts:</label>
@@ -156,12 +156,15 @@
             {% endfor %}
             </tbody>
         </table>
+        <!--
         <input type="button" value="Add More" id="add_more">
         <script>
             $('#add_more').click(function() {
                 cloneMore('#id_agent_contacts tr:last', 'contactinfo_set');
             });
         </script>
+        -->
+        <a id="add_more" href="javascript:document.agentForm.submit.click();document.location.reload(true);document.location='{% url tickets_edit%}#add_more'">Add more</a>
         <div id="form-results"></div>            
         <input type="submit" value="Save" name="submit" alt="Save changes" />
     </form>
