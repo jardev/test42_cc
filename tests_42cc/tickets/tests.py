@@ -1,11 +1,14 @@
+import datetime
 from django.test import TestCase
 from django.test.client import Client
 from django.http import HttpRequest, HttpResponse
 from django.template import Template, Context
+from django.core.urlresolvers import reverse
 from tests_42cc.tickets import models
 from tests_42cc import settings
+from tests_42cc.tickets.forms import AgentForm, DatePickerWidget
 from tests_42cc.tickets.templatetags.tickets_tags import build_object_link
-import datetime
+from tests_42cc.tickets import views
 
 class AgentModelTest(TestCase):
     def setUp(self):        
@@ -68,21 +71,22 @@ class AgentModelTest(TestCase):
 class IndexViewTest(TestCase):
     def test_index(self):
         client = Client()
-        response = client.get('/')
+        response = client.get(reverse(views.index))
         self.failUnlessEqual(response.status_code, 200)
         
 class MiddlewareTest(TestCase):
     def test_http_request_logger(self):
-        client = Client()        
-        response = client.get('/admin/')
-        result = models.HttpRequestLogEntry.objects.get(url='/admin/')
+        client = Client()
+        index_url = reverse(views.index)
+        response = client.get(index_url)
+        result = models.HttpRequestLogEntry.objects.get(url=index_url)
         self.assertNotEquals(result, None)
         self.assertEquals(result.method, 'GET') 
         
 class ContextProcessorTest(TestCase):
     def test_response(self):
         client = Client()
-        response = client.get('/')
+        response = client.get(reverse(views.index))
         self.assertEquals(response.context['settings'], settings)
         
 class EditFormTest(TestCase):
@@ -93,12 +97,23 @@ class EditFormTest(TestCase):
         self.assertNotEquals(self.agent, None)
         
     def test_edit_view(self):        
-        response = self.client.get('/edit/')
+        response = self.client.get(reverse(views.edit))
         self.assertEqual(response.status_code, 200)
         self.failIfEqual(response.context['form'], None)
         self.failIfEqual(response.context['contacts'], None)
         self.assertContains(response, self.agent.pk)
-        
+
+    def test_reverse_fields(self):
+        form_fields = AgentForm().fields.keys()
+        original_fields = AgentForm.Meta.fields
+        form_fields.reverse()
+        self.assertEquals(form_fields, original_fields)
+
+    def test_date_picker_widget(self):
+        w = DatePickerWidget()
+        self.assertEquals(w.render('date', '2010-01-01'),
+            u'<input type="text" class="datepicker" value="2010-01-01" name="date" />')
+                
     def test_edit_save(self):
         post_data = { # change first, last name, biography and birthday
                       u'first_name': [u'New First Name'], 
@@ -127,8 +142,6 @@ class EditFormTest(TestCase):
                         
                       # delete the phone number
                       u'contactinfo_set-2-id': [u'4'], 
-                      #u'contactinfo_set-2-contact_type': [u'phone'], 
-                      #u'contactinfo_set-2-contact': [u'+38 044 111 22 33'],     
                       u'contactinfo_set-2-DELETE': [u'on'], 
                       
                       # nothing to do  
@@ -155,7 +168,7 @@ class EditFormTest(TestCase):
                       u'contactinfo_set-6-contact': [u''],
                       u'contactinfo_set-6-is_active': [u'on'] }
         
-        response = self.client.post('/edit/', post_data)
+        response = self.client.post(reverse(views.edit), post_data)
         self.assertEquals(response.status_code, 302) # redirect to main page
         modified_agent = models.Agent.objects.get(pk=self.agent.pk)
         self.assertEquals(modified_agent.first_name, 'New First Name')
@@ -178,12 +191,12 @@ class AuthTest(TestCase):
         self.client = Client()
         
     def test_unauthorized(self):
-        response = self.client.get('/edit/')
+        response = self.client.get(reverse(views.edit))
         self.assertEqual(response.status_code, 302)
         
     def test_authorized(self):
         self.client.login(username='admin', password='admin')
-        response = self.client.get('/edit/')
+        response = self.client.get(reverse(views.edit))
         self.assertEqual(response.status_code, 200)
 
 class EditObjectTagTest(TestCase):
@@ -253,10 +266,10 @@ class HttpLogViewTest(TestCase):
         self.client.login(username='admin', password='admin')
         # make 10 requests
         for i in range(10):
-            self.client.get('/')
+            self.client.get(reverse(views.index))
             
     def test_view_http_log(self):
-        response = self.client.get('/http-log/')
+        response = self.client.get(reverse(views.view_http_log))
         self.assertEquals(response.status_code, 200)
         for log_entry in models.HttpRequestLogEntry.objects.all()[:10]:
             self.assertContains(response, log_entry)
